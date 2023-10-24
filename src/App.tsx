@@ -1,4 +1,4 @@
-import GameConsole from './assets/components/GameConsole'
+import GameConsole from './components/GameConsole'
 import './App.css'
 
 function App() {
