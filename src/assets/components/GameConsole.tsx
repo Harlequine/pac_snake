@@ -1,37 +1,27 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SnakeGame from '../games/SnakeGame'
 
 import './GameConsole.css'
 
-
-
-
-
 const GameConsole = () => {
   const [ inputKey, setInputKey ] = useState("");
-  const timeoutRef = useRef<unknown>(null) ;
+  // const timeoutRef = useRef<unknown>(null) ;
   
   useEffect(() => {
-    document.addEventListener('keyup', handleKeyPress, true);
-
-    return () => {
-      document.removeEventListener('keyup', handleKeyPress, true);
-    };
+    window.addEventListener('keyup', e => {
+      handleKeyPress(e);
+    });
   }, []);
 
   const handleKeyPress = (e: { key: React.SetStateAction<string> }) => {
-    /**
-     * TODO: multiple key input at the same time will not be proccessed.
-     *        can do combo (ex: A+S, W+D etc... as long as it is right angle 90deg)
-     *        invalid input(A+D, W+S etc....)
-     */
-    if (!timeoutRef.current) {
-      setInputKey(e.key);
+    setInputKey(e.key);
+    // if (!timeoutRef.current) {
+    //   setInputKey(e.key);
 
-      timeoutRef.current = setTimeout(() => {
-        timeoutRef.current = null;
-      }, 0);
-    }
+    //   timeoutRef.current = setTimeout(() => {
+    //     timeoutRef.current = null;
+    //   }, 0);
+    // }
   };
 
   

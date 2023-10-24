@@ -2,3 +2,25 @@
   width: 100%;
   height: 100%;
 }
+.game .board {
+  display: grid;
+  grid-template-columns: repeat(17, 1fr);
+}
+.game .board .row .cell {
+  width: 100%;
+  height: 31.5px;
+}
+
+.snake {
+  background-color: yellow;
+}
+
+.snake-head {
+  border: 1px solid black;
+  border-radius: 50%;
+  background-color: black;
+}
+
+.fruit {
+  background-color: red;
+}
