@@ -23,35 +23,44 @@ const createBoard = (boardSize:number) => {
 
 
 const SnakeGame = (props:Dpad) => {
+  const board = createBoard(17)
   const [ snake, setSnake ] = useState([24,12,0]);
   const [ head, setHead ] = useState(snake[0]);
-  const [ board, setBoard ] = useState(createBoard(17));
+  
   const [ direction, setDirection ] = useState(12) 
-  const [ fruit, setFruit ] = useState([54, 94, 114, 120, 83])
-  const [ gameOver, isGameOver ] = useState(false);
+  const [ fruit, setFruit ] = useState(114)
+  const [ isGameOver, setIsGameOver ] = useState(false);
+  const [ columnCounter, setColumnCounter ] = useState(0);
   const { inputKey } = props
 
 
-  useEffect(() => {
-
-  },[])
-
   useInterval(
     () => {
+      const move = moveToDirection(inputKey)
       const snakeHolder = [...snake];
-      if(!fruit.includes(head)){
+
+      if(move === 0){
+        if(direction === 1 || direction === -1)
+          setColumnCounter(columnCounter+1)
+        else setColumnCounter(0)
+        
+        snakeHolder.unshift(head+direction);
+      }
+      else{
+        if(move === 1 || move === -1)
+          setColumnCounter(columnCounter+1)
+        else setColumnCounter(0)
+        
+        snakeHolder.unshift(head+move);
+        setDirection(move)
+      }
+
+      if(snakeAteFruit() === false){
         snakeHolder.pop();
       }
-      if(fruit.includes(head)){
-        setFruit(() => fruit.filter(fruit => fruit !== head))
-        
-      }
-  
-      snakeHolder.unshift(head+direction);
       setSnake(snakeHolder);
-      
     },
-    gameOver ? null : 100,
+    isGameOver ? null : 150,
   )
 
   useEffect(() => {
@@ -59,23 +68,49 @@ const SnakeGame = (props:Dpad) => {
   },[snake,setSnake])
 
   useEffect(() => {
+    if(snake.length !== new Set(snake).size || isOutOfBounds(head)){//check
+      setSnake([])
+      setIsGameOver(true);
+    }
+  },[head, columnCounter])
+
+  const isOutOfBounds = (head) => {
+    if(head > 203 || head < 0)
+      return true
+    return false;
+  }
+
+  const moveToDirection = (inputKey:string):number => {
     if(inputKey === 'w' || inputKey === 'ArrowUp'){
-      setDirection(-1)
+      if(direction !== 1)
+        return -1
     }
 
     else if(inputKey === 'a' || inputKey === 'ArrowLeft'){
-      setDirection(-12)
+      if(direction !== 12)
+        return -12
     }
     else if(inputKey === 's' || inputKey === 'ArrowDown'){
-      setDirection(1)
+      if(direction !== -1)
+        return 1
     }
 
     else if(inputKey === 'd' || inputKey === 'ArrowRight'){
-      setDirection(12)
+      if(direction !== -12)
+        return 12
     }
-    
+    return 0
+  }
 
-  },[inputKey])
+  const snakeAteFruit = () => {
+    if(fruit === head){
+      setFruit(-10)
+      return true;
+    }
+    return false;
+  }
+
+
 
   return (
     <div className="game">
@@ -83,14 +118,14 @@ const SnakeGame = (props:Dpad) => {
       {board.map((row, rowIdx) => (
           <div key={rowIdx} className="row">
             {row.map((cellValue, cellIdx) => {
-              return <div key={cellIdx} className={`cell ${snake.includes(cellValue) ? cellValue === head ? 'snake-head' : 'snake' : ''} ${fruit.includes(cellValue) ? 'fruit' : ''}`}>{cellValue}</div>;
-            })}
+              return <div key={cellIdx} className={`cell ${snake.includes(cellValue) ? cellValue === head ? 'snake-head' : 'snake' : ''} ${fruit === cellValue ? 'fruit' : ''}`}>{cellValue}</div>;
+            })} 
           </div>
         ))}
       </div>
       
     </div>
-  )
+  ) 
 }
 
 export default SnakeGame

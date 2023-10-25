@@ -9,6 +9,7 @@
 .game .board .row .cell {
   width: 100%;
   height: 31.5px;
+  outline: 1px solid black;
 }
 
 .snake {
