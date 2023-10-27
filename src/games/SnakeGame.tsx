@@ -8,6 +8,7 @@ type Dpad = {
 }
 
 
+
 const createBoard = (boardSize:number) => {
   let counter = 0;
   const board = [];
@@ -30,27 +31,19 @@ const SnakeGame = (props:Dpad) => {
   const [ direction, setDirection ] = useState(12) 
   const [ fruit, setFruit ] = useState(114)
   const [ isGameOver, setIsGameOver ] = useState(false);
-  const [ columnCounter, setColumnCounter ] = useState(0);
   const { inputKey } = props
 
 
   useInterval(
     () => {
+      // checkSnake()
       const move = moveToDirection(inputKey)
       const snakeHolder = [...snake];
 
       if(move === 0){
-        if(direction === 1 || direction === -1)
-          setColumnCounter(columnCounter+1)
-        else setColumnCounter(0)
-        
         snakeHolder.unshift(head+direction);
       }
       else{
-        if(move === 1 || move === -1)
-          setColumnCounter(columnCounter+1)
-        else setColumnCounter(0)
-        
         snakeHolder.unshift(head+move);
         setDirection(move)
       }
@@ -58,27 +51,29 @@ const SnakeGame = (props:Dpad) => {
       if(snakeAteFruit() === false){
         snakeHolder.pop();
       }
+      
       setSnake(snakeHolder);
+      
     },
     isGameOver ? null : 150,
   )
 
   useEffect(() => {
     setHead(snake[0]);
+    checkSnake()
   },[snake,setSnake])
 
-  useEffect(() => {
-    if(snake.length !== new Set(snake).size || isOutOfBounds(head)){//check
+  // useEffect(() => {
+    
+  // },[head,direction,snake])
+
+  const checkSnake = () => {
+    if(snake.length !== new Set(snake).size||snake[0] > 203 || snake[0] < 0 || (head % 12 === 0 && direction === -1) || (head % 12 === 11 && direction === 1)){
       setSnake([])
       setIsGameOver(true);
     }
-  },[head, columnCounter])
-
-  const isOutOfBounds = (head) => {
-    if(head > 203 || head < 0)
-      return true
-    return false;
   }
+  //(head % 12 === 0 && direction === -1) || (head % 12 === 11 && direction === 1)
 
   const moveToDirection = (inputKey:string):number => {
     if(inputKey === 'w' || inputKey === 'ArrowUp'){
